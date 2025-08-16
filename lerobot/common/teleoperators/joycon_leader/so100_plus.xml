@@ -1,0 +1,130 @@
+<mujoco model="SO_6">
+  <compiler angle="radian" meshdir="assets_plus/"/>
+
+  <asset>
+    <material name="white" rgba="1.0 1.0 1.0 1.0" specular="0.1" shininess="0.1"/>
+    <!-- <material name="black" rgba="0.1 0.1 0.1 1.0" specular="0.1" shininess="0.1"/> -->
+    <mesh name="base_link" file="base_link.STL"/>
+    <mesh name="shoulder_rotation" file="shoulder_rotation.STL"/>
+    <mesh name="shoulder_pitch" file="shoulder_pitch.STL"/>
+    <mesh name="ellbow" file="ellbow.STL"/>
+    <mesh name="wrist_pitch" file="wrist_pitch.STL"/>
+    <mesh name="wrist_jaw" file="wrist_jaw.STL"/>
+    <mesh name="wrist_roll" file="wrist_roll.STL"/>
+    <mesh name="gripper" file="gripper.STL"/>
+  </asset>
+
+  <default>
+    <default class="so_arm100">
+      <joint frictionloss="0.1" armature="0.1"/>
+      
+      <default class="Rotation">
+        <joint axis="0 1 0" range="-2.2 2.2"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="-2.2 2.2"/>
+      </default>
+      <default class="Pitch">
+        <joint axis="1 0 0" range="-3.14158 0.2"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="-3.14158 0.2"/>
+      </default>
+      <default class="Elbow">
+        <joint axis="1 0 0" range="0 3.14158"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="0 3.14158"/>
+      </default>
+      <default class="Wrist_Pitch">
+        <joint axis="1 0 0" range="-2.0 1.8"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="-2.0 1.8"/>
+      </default>
+      <default class="Wrist_Jaw">
+        <joint axis="0 0 1" range="-1.45 1.45"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="-1.45 1.45"/>
+      </default>
+      <default class="Wrist_Roll">
+        <joint axis="0 1 0" range="-3.14158 3.14158"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="-3.14158 3.14158"/>
+      </default>
+      <default class="Jaw">
+        <joint axis="0 0 1" range="-0.2 2.0"/>
+        <position kp="50" dampratio="1" forcerange="-35 35" ctrlrange="-0.2 2.0"/>
+      </default>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" density="0" group="2" material="white"/>
+        <default class="motor_visual">
+          <geom material="black"/>
+        </default>
+      </default>
+      <default class="collision">
+        <geom group="3" type="mesh"/>
+        <default class="finger_collision">
+          <geom type="box" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001"/>
+        </default>
+      </default>
+    </default>
+  </default>
+
+  <worldbody>
+    <body name="base" childclass="so_arm100">
+      <geom type="mesh" mesh="base_link" class="visual"/>
+      <geom type="mesh" mesh="base_link" class="collision"/>
+      <body name="shoulder_rotation" pos="0.0612 0 0.0623">
+        <inertial pos="0.031241 -9.1232e-05 0.01108" quat="0.980864 -0.00621211 0.0833514 -0.175841" mass="0.11865" diaginertia="5.94116e-05 5.89816e-05 3.13398e-05"/>
+        <joint name="shoulder_rotation_joint" class="Rotation" pos="0 0 0" axis="0 0 1"/>
+        <geom type="mesh" mesh="shoulder_rotation" class="visual"/>
+        <geom type="mesh" mesh="shoulder_rotation" class="collision"/>
+        <body name="shoulder_pitch" pos="0.0306 0 0.0542" quat="0.707105 -0.707108 0 0">
+          <inertial pos="0.07018 0.0031055 -0.00011721" quat="0.500964 0.506396 0.498918 0.493639" mass="0.16241" diaginertia="0.000213311 0.000167161 7.01525e-05"/>
+          <joint name="shoulder_pitch_joint" class="Pitch" pos="0 0 0" axis="0 0 1"/>
+          <geom type="mesh" mesh="shoulder_pitch" class="visual"/>
+          <geom type="mesh" mesh="shoulder_pitch" class="collision"/>
+          <body name="ellbow" pos="0.11257 0.028 0">
+            <inertial pos="0.076801 -0.001378 -0.003496" quat="0.54204 0.442688 0.45073 0.554131" mass="0.14797" diaginertia="0.000138806 0.000107744 4.8424e-05"/>
+            <joint name="ellbow_joint" class="Elbow" pos="0 0 0" axis="0 0 1"/>
+            <geom type="mesh" mesh="ellbow" class="visual"/>
+            <geom type="mesh" mesh="ellbow" class="collision"/>
+            <body name="wrist_pitch" pos="0.1349 -0.0052 0">
+              <inertial pos="0.01987 -8.6474e-05 -0.0011098" quat="0.509933 0.859957 -0.019182 -0.00865843" mass="0.039787" diaginertia="5.47838e-06 4.44848e-06 4.31554e-06"/>
+              <joint name="wrist_pitch_joint" class="Wrist_Pitch" pos="0 0 0" axis="0 0 -1"/>
+              <geom type="mesh" mesh="wrist_pitch" class="visual"/>
+              <geom type="mesh" mesh="wrist_pitch" class="collision"/>
+              <body name="wrist_jaw" pos="0.0345 0 -0.0012" quat="0.707105 0.707108 0 0">
+                <inertial pos="0.0226121 1.10298e-07 0.0227845" quat="0.446635 0.548194 0.548175 0.446659" mass="0.129207" diaginertia="4.30694e-05 3.72107e-05 2.90573e-05"/>
+                <joint name="wrist_jaw_joint" class="Wrist_Jaw" pos="0 0 0" axis="0 0 -1"/>
+                <geom type="mesh" mesh="wrist_jaw" class="visual"/>
+                <geom type="mesh" mesh="wrist_jaw" class="collision"/>
+                <body name="wrist_roll" pos="0.0488 0 -0.0075" quat="0.707105 0 0.707108 0">
+                  <inertial pos="0.0054721 0.00096004 0.028413" quat="0.70511 0.135485 0.15656 0.678198" mass="0.093165" diaginertia="5.03437e-05 4.64877e-05 2.73546e-05"/>
+                  <joint name="wrist_roll_joint" class="Wrist_Roll" pos="0 0 0" axis="0 0 1"/>
+                  <geom type="mesh" mesh="wrist_roll" class="visual"/>
+                  <geom type="mesh" mesh="wrist_roll" class="collision"/>
+                  <body name="gripper" pos="-0.020398 0.0012 0.0248" quat="-2.59734e-06 -2.59735e-06 0.707108 0.707105">
+                    <inertial pos="-0.0019417 0.030396 -0.0033973" quat="0.693415 0.718265 0.0561983 -0.0105774" mass="0.020214" diaginertia="1.10841e-05 8.97088e-06 2.97828e-06"/>
+                    <joint name="gripper_joint" class="Jaw" pos="0 0 0" axis="0 0 -1"/>
+                    <geom type="mesh" mesh="gripper" class="visual"/>
+                    <geom type="mesh" mesh="gripper" class="collision"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position class="Rotation" name="Rotation" joint="shoulder_rotation_joint"/>
+    <position class="Pitch" name="Pitch" joint="shoulder_pitch_joint"/>
+    <position class="Elbow" name="Elbow" joint="ellbow_joint"/>
+    <position class="Wrist_Pitch" name="Wrist_Pitch" joint="wrist_pitch_joint"/>
+    <position class="Wrist_Jaw" name="Wrist_Jaw" joint="wrist_jaw_joint" />
+    <position class="Wrist_Roll" name="Wrist_Roll" joint="wrist_roll_joint"/>
+    <position class="Jaw" name="Jaw" joint="gripper_joint"/>
+  </actuator>
+
+  <contact>
+    <exclude body1="base" body2="shoulder_rotation"/>
+  </contact>
+
+  <keyframe>
+    <key name="home" qpos="0 -1.57079 1.57079 0 0 0 0" ctrl="0 -1.57079 1.57079 0 0 0 0"/>
+  </keyframe>
+</mujoco>
