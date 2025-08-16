@@ -13,6 +13,9 @@ conda install -y ffmpeg=7.1.1 -c conda-forge
 pip install -e .
 pip install lerobot
 pip install 'lerobot[feetech]'      # Feetech motor support
+# pip install transformers
+# pip install num2words -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple some-package
+pip install -e ".[smolvla]" -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple some-package
 
 # install joycon robotics
 # git clone https://github.com/box2ai-robotics/joycon-robotics.git

@@ -105,9 +105,10 @@ class JoyconTeleop(Teleoperator):
         pass
 
     def disconnect(self) -> None:
-        if not self.is_connected:
-            raise DeviceNotConnectedError(
-                "JoyconTeleop is not connected. You need to run `robot.connect()` before `disconnect()`."
-            )
-        if self.listener is not None:
-            self.listener.stop()
+        pass
+        # if not self.is_connected:
+        #     raise DeviceNotConnectedError(
+        #         "JoyconTeleop is not connected. You need to run `robot.connect()` before `disconnect()`."
+        #     )
+        # if self.listener is not None:
+        #     self.listener.stop()
