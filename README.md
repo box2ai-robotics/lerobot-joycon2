@@ -32,6 +32,8 @@ cd lerobot-kinematics
 pip install -e .
 cd ..
 
+pip uninstall -y numpy pynput datasets 
+pip install numpy==1.24.4 pynput==1.7.7 datasets==3.4.1 
 ```
 
 ##

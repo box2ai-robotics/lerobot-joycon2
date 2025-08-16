@@ -59,6 +59,8 @@ class SO101Follower(Robot):
             calibration=self.calibration,
         )
         self.cameras = make_cameras_from_configs(config.cameras)
+        self.gripper_state = 0
+        self.gripper_state_last = 0
 
     @property
     def _motors_ft(self) -> dict[str, type]:
@@ -194,9 +196,37 @@ class SO101Follower(Robot):
             present_pos = self.bus.sync_read("Present_Position")
             goal_present_pos = {key: (g_pos, present_pos[key]) for key, g_pos in goal_pos.items()}
             goal_pos = ensure_safe_goal_position(goal_present_pos, self.config.max_relative_target)
-
-        # Send goal position to the arm
-        self.bus.sync_write("Goal_Position", goal_pos)
+        
+        # torque feedback gripper moter protection
+        # if self.controllers is not None:
+        motor_name_map = ['shoulder_pan','shoulder_lift','elbow_flex', 'wrist_flex','wrist_roll','gripper']
+        
+        feedback = self.bus.sync_read("Present_Position")
+        Present_Load = self.bus.sync_read("Present_Load")
+        # Present_Load_list = list(Present_Load_dict.values())
+        # goal_pos = list(goal_pos.values())
+        print(Present_Load)
+        # print("Present_Load", [f"{x:.3f}" for x in Present_Load])
+        
+        for idx in range(len(Present_Load)):
+            if Present_Load[motor_name_map[idx]] >= 1024:
+                Present_Load[motor_name_map[idx]] = 1024 - Present_Load[motor_name_map[idx]]
+                
+        if self.gripper_state == 0 :
+            if Present_Load[motor_name_map[-1]] > 250:
+                goal_pos[motor_name_map[-1]] = feedback[motor_name_map[-1]]  
+                
+        # add all motors
+        for idx in range(len(Present_Load)):
+            if Present_Load[motor_name_map[idx]] > 1000:
+                goal_pos[motor_name_map[idx]] = feedback[motor_name_map[idx]]  
+                
+        self.bus.sync_write("Goal_Position", goal_pos)  
+        self.gripper_state_last = self.gripper_state
+        
+        # else:
+            # Send goal position to the arm
+            # self.bus.sync_write("Goal_Position", goal_pos)
         return {f"{motor}.pos": val for motor, val in goal_pos.items()}
 
     def disconnect(self):
