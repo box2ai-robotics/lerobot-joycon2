@@ -97,7 +97,7 @@ class JoyconTeleop(Teleoperator):
             if name == 'right':
                 self.button_control = button_control         
             leader_pos = dict(zip([f"{name}.pos" for name in motor_name], controller_command))
-            # print(leader_pos)
+            # print(self.button_control)
             self.logs["read_controller_{name}_command_dt_s"] = time.perf_counter() - before_controller_read_t
             return leader_pos
 

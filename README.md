@@ -49,7 +49,7 @@ python -m lerobot.calibrate --robot.type=so101_follower --robot.port=/dev/ttyACM
 
 2) 移动每个关节通过其全范围的运动得到其所有关节可达范围
 
-3) 观察最大最小值是否正常，然后按下回车即校准完毕，程序会自动保存校准文件到[~/.cache/huggingface/lerobot/calibration](~/.cache/huggingface/lerobot/calibration)中.(下按【ctrl+h】打开隐藏文件)
+3) 观察最大最小值是否正常，然后按下回车即校准完毕，程序会自动保存校准文件到 `~/.cache/huggingface/lerobot/calibration/robots/so101_follower/follower.json` 中.(下按【ctrl+h】打开隐藏文件)
 
 ### 3.teleop_joycon遥操作：遥控机械臂
 ```shell

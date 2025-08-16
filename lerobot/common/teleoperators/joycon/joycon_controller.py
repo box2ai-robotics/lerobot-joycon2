@@ -90,7 +90,7 @@ class JoyConController:
         _, _, _, roll, pitch, yaw = target_pose
         y = 0.01
         pitch = -pitch 
-        roll = roll - math.pi/4 # lerobo末端旋转90度
+        roll = roll - math.pi/3 # lerobo末端旋转90度
         
         # 双臂朝中间偏
         # if self.name == 'left':

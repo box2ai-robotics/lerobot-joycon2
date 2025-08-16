@@ -209,6 +209,14 @@ def record_loop(
                 action = teleop.get_action(robot)
             else:
                 action = teleop.get_action()
+                
+            if teleop.button_control == 1:
+                print("Right arrow key pressed. Exiting loop...")
+                events["exit_early"] = True
+            elif teleop.button_control == -1:
+                print("Left arrow key pressed. Exiting loop and rerecord the last episode...")
+                events["stop_recording"] = True
+                events["exit_early"] = True
             
         else:
             logging.info(
