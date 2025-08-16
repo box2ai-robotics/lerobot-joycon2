@@ -1,40 +1,59 @@
-# joycon SmolVLA
+# Leorbot-joycon2 for SmolVLA
 
-#### ***Written by BOX2AI SML 2025.7.28***   
-<img src="media/box2ai.png" alt="alt text" width="5%">     
-<img src="media/box2ai.png" alt="alt text" width="5%">
-<img src="media/box2ai.png" alt="alt text" width="5%">
-
-
-##
-### 1.找到机械臂端口：在终端运行命令行然后【拔掉typeC数据线】，然后按【Enter回车】（一般为/dev/ttyACM*）得到端口号，要执行【两次】分别找到主机械臂和从机械臂的端口号
+### 0.安装
 ```shell
-python -m lerobot.find_port
+# install lerobot
+conda create -y -n lerobot python=3.10
+conda activate lerobot
+
+conda install -y ffmpeg -c conda-forge
+conda install -y ffmpeg=7.1.1 -c conda-forge
+
+# cd lerobot
+pip install -e .
+pip install lerobot
+pip install 'lerobot[feetech]'      # Feetech motor support
+
+# install joycon robotics
+# git clone https://github.com/box2ai-robotics/joycon-robotics.git
+cd joycon-robotics
+pip install -e .
+sudo apt-get update
+sudo apt-get install -y dkms libevdev-dev libudev-dev cmake
+make install
+cd ..
+
+# install lerobot-kinematics
+# git clone https://github.com/box2ai-robotics/lerobot-kinematics.git
+cd lerobot-kinematics
+pip install -e .
+cd ..
+
 ```
-##
 
-### 2.校准机械臂：分别校准主从机械臂，命令行指定【机械臂类型】、【机械臂端口号】、【自定义机械臂id】（体现在校准文件id.json）,您可以在你的主文件夹下按【ctrl+h】打开隐藏文件，在【.cache/huggingface/lerobot/calibration】找到你的校准文件
-***端口授权***
+##
+### 1.校准机械臂
+插入您的机械臂的电源和TypeC-USB，运行下面的指令
 ```shell
+# python -m lerobot.find_port # 默认是ACM0
+
 sudo chmod 777 /dev/ttyACM0
-sudo chmod 777 /dev/ttyACM1
-```
-### 校准方法
-***终端执行命令行后，您需要将机器人移动到所有关节位于其范围中间的位置【中位】。【Enter回车】后,移动每个关节通过其全范围的运动得到其所有关节可达范围***
 
-***中位***
+python -m lerobot.calibrate --robot.type=so101_follower --robot.port=/dev/ttyACM0 --robot.id=follower
+```
+然后按照下面的操作执行：
+
+1) 将机械臂扳动到0位后，按下回车：
 
 ![alt text](media/image.png)
 
+2) 移动每个关节通过其全范围的运动得到其所有关节可达范围
 
-***校准从臂***
-```shell
-python -m lerobot.calibrate --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=follower
-```
+3) 观察最大最小值是否正常，然后按下回车即校准完毕，程序会自动保存校准文件到[~/.cache/huggingface/lerobot/calibration](~/.cache/huggingface/lerobot/calibration)中.(下按【ctrl+h】打开隐藏文件)
 
 ### 3.teleop_joycon遥操作：遥控机械臂
 ```shell
-python -m lerobot.teleoperate --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=follower --teleop.type=joycon 
+python -m lerobot.teleoperate --robot.type=so101_follower --robot.port=/dev/ttyACM0 --robot.id=follower --teleop.type=joycon 
 ```
 
 ***查找相机：您可以在【~/workspace/smolvla/lerobot/outputs/captured_images】找到你的相机所对应的序号***
@@ -43,13 +62,13 @@ python -m lerobot.find_cameras opencv
 ```
 ***带图像的遥操作***
 ```shell
-python -m lerobot.teleoperate --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=follower --robot.cameras="{ OBS_IMAGE_1: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 60}}" --teleop.type=joycon --display_data=true
+python -m lerobot.teleoperate --robot.type=so101_follower --robot.port=/dev/ttyACM0 --robot.id=follower --robot.cameras="{ OBS_IMAGE_1: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 60}}" --teleop.type=joycon --display_data=true
 ```
 
 ##
 ### 4.record录制数据集：若要重新录制可以删掉原数据集【~/.cache/huggingface/lerobot/Datasets】
 ```shell
-python -m lerobot.record --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=follower --robot.cameras="{ OBS_IMAGE_1: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 60}}" --dataset.single_task="Grasp an orange block and put it in the box."  --dataset.repo_id=Datasets/grasp_put --dataset.episode_time_s=30 --dataset.reset_time_s=10  --dataset.num_episodes=50 --teleop.type=joycon
+python -m lerobot.record --robot.type=so101_follower --robot.port=/dev/ttyACM0 --robot.id=follower --robot.cameras="{ OBS_IMAGE_1: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 60}}" --dataset.single_task="Grasp an orange block and put it in the box."  --dataset.repo_id=Datasets/grasp_put --dataset.episode_time_s=30 --dataset.reset_time_s=10  --dataset.num_episodes=50 --teleop.type=joycon
  ```
  
  ##
@@ -69,5 +88,8 @@ python lerobot/scripts/train.py   --policy.path=lerobot/smolvla_base   --dataset
 ##
 ### 6.reference推理：检验您的模型的微调效果
 ```shell
-python -m lerobot.record --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=follower --robot.cameras="{ OBS_IMAGE_1: {type: opencv, index_or_path: 4, width: 640, height: 480, fps: 60}}" --dataset.single_task="Grasp an orange block and put it in the box."  --dataset.repo_id=Datasets/eval_grasp_put_orange  --dataset.episode_time_s=300 --dataset.reset_time_s=10  --dataset.num_episodes=50  --policy.path=/home/sml/workspace/SMOLVLA/lerobot/outputs/train/20kob_smolvla/checkpoints/last/pretrained_model 
+python -m lerobot.record --robot.type=so101_follower --robot.port=/dev/ttyACM0 --robot.id=follower --robot.cameras="{ OBS_IMAGE_1: {type: opencv, index_or_path: 4, width: 640, height: 480, fps: 60}}" --dataset.single_task="Grasp an orange block and put it in the box."  --dataset.repo_id=Datasets/eval_grasp_put_orange  --dataset.episode_time_s=300 --dataset.reset_time_s=10  --dataset.num_episodes=50  --policy.path=/home/sml/workspace/SMOLVLA/lerobot/outputs/train/20kob_smolvla/checkpoints/last/pretrained_model 
 ```
+
+
+*Written by BOX2AI SML 2025.7.28* 

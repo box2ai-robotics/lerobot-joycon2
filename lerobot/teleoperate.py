@@ -46,7 +46,6 @@ from lerobot.common.robots import (  # noqa: F401
     RobotConfig,
     koch_follower,
     make_robot_from_config,
-    so100plus_follower,
     so100_follower,
     so101_follower,
 )
@@ -54,8 +53,8 @@ from lerobot.common.teleoperators import (
     Teleoperator,
     TeleoperatorConfig,
     make_teleoperator_from_config,
-    so100plus_leader,
-    joycon_leader
+
+    joycon
 )
 from lerobot.common.utils.robot_utils import busy_wait
 from lerobot.common.utils.utils import init_logging, move_cursor_up

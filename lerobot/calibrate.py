@@ -39,7 +39,6 @@ from lerobot.common.robots import (  # noqa: F401
     koch_follower,
     lekiwi,
     make_robot_from_config,
-    so100plus_follower,
     so100_follower,
     so101_follower,
 )
@@ -48,7 +47,6 @@ from lerobot.common.teleoperators import (  # noqa: F401
     TeleoperatorConfig,
     koch_leader,
     make_teleoperator_from_config,
-    so100plus_leader,
     so100_leader,
     so101_leader,
 )
